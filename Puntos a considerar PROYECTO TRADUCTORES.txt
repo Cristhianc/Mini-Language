@@ -1,0 +1,4 @@
+Puntos a considerar:
+
+	-Verificar que cualquier identificador dentro de una expresion aritmetica, logica, ciclo o impresion ha sido previamente inicializado.
+	-Localizar los errores de bison en lex 
