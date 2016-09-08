@@ -1,11 +1,16 @@
 %{
 #include <stdio.h>
 #include <math.h>
+#include "tablaSimb.h"
+
+simbolo *pos_i;
 int temp=1;
 int lin_cod_i=1;
+char val_actual=' ';
 union numero {
 	int ent;
 	float flot;
+	char *nombre;
 }
 void yyerror(char *msj);
 %}
@@ -19,6 +24,7 @@ void yyerror(char *msj);
 %token <pos_ini> ID
 %type <nom> identif
 %type <num> numero
+%type <num> exprar
 %right '='
 %left '+' '-'
 %left '*' '/'
@@ -35,10 +41,22 @@ instrs: /* Vacio */
 
 instr:	LEE identif ';'	{printf("%d: param %s\n", lin_cod_i, $2->nombre);
 						++lin_cod_i;
-						printf("call lee,1"); ++lin_cod_i;}
+						printf("%d: call lee,1\n"); 
+						++lin_cod_i;}
 	|	IMPRIME exprar ';'	{	if ($2!=NULL) {
-									printf("param %s", $2->nombre);
-									printf("call lee,1");
+									if (val_actual=='i') {
+										printf("%d: param %d\n", $2);
+										++lin_cod_i;
+									}
+									else if (val_actual=='f') {
+										printf("%d: param %f\n", $2);
+										++lin_cod_i;
+									else {
+										printf("%d: param %s\n", $2);
+										++lin_cod_i;
+									}
+									printf("%d: call lee,1\n");
+									++lin_cod_i;
 								} else {
 									fprintf("%d.%d-%d.%d: Expresion aritmetica no inicializada",
 									@2.first_line, @2.first_column, @2.last_line,
@@ -55,9 +73,9 @@ exprasig:	identif '=' exprar
 		|	identif '=' exprasig
 		;
 
-exprar:	identif
-	|	numero
-	|	exprar '+' exprar
+exprar:	identif				{$$=$1;}
+	|	numero				{$$=$1;}
+	|	{printf("%d: t%d = ", lin_cod_i, temp); strcpy()} exprar '+' exprar
 	|	exprar '-' exprar
 	|	exprar '*' exprar
 	|	exprar '/' exprar	{	if ($3)
@@ -68,7 +86,9 @@ exprar:	identif
 									@3.last_line, @3.last_column);
 								}
 							}
-	|	'-' numero %prec UMENOS	{printf("t%d = -%d", temp, $2); ++temp;}
+	|	'-' numero %prec UMENOS	{printf("%d: t%d = -%d\n", lin_cod_i, temp, $2); 
+								++lin_cod_i;
+								++temp;}
 	|	'(' exprar ')'
 	;
 	
@@ -76,17 +96,48 @@ exprlog:	exprar RELOP exprar
 		|	'(' exprlog ')'
 		;
 
-param:	numero		{printf("t%d = %d", temp, $1); ++temp;}
-	|	exprasig
+param:	numero			{ if (val_actual=='i') {
+							printf("%d: t%d = %d\n", lin_cod_i, temp, $1);
+							++lin_cod_i;
+							++temp;
+						 }
+						 else {
+							printf("%d: t%d = %f\n", lin_cod_i, temp, $1);
+							++lin_cod_i;
+							++temp;
+						 }
+						}
+	|	identif '=' exprar	{ simbolo sim_comp;
+							  if (val_actual=='i') {
+								printf("%d: %s = %d\n", lin_cod_i, $1, $3);
+								++lin_cod_i;
+							  }
+							  else if (val_actual=='f') {
+								printf("%d: %s = %f\n", lin_cod_i, $1, $3);
+								++lin_cod_i;
+							  }
+							  else {
+								sim_comp = buscar(pos_ini, $3);
+								if (sim_comp==NULL && val_actual!='t') {
+									fprintf(stderr, "%d.%d-%d.%d: Variable %s no inicializada",
+									@3.first_line, @3.first_column,
+									@3.last_line, @3.last_column, $3);
+								}
+								else {
+									printf("%d: %s = %s\n", lin_cod_i, $1, $3);
+									++lin_cod_i;
+								}
+							  }
+							}
 	|	'(' param ')'
 	;
 
-identif:	ID	{$$=$1->nombre;}
+identif:	ID	{strcpy($$, $1->nombre); val_actual='s';}
 		|	'(' identif ')'
 		;
 
-numero:		ENT		{$$=$1;}
-		|	FLOT	{$$=$1;}
+numero:		ENT		{$$.ent=$1.ent; val_actual='i';}
+		|	FLOT	{$$.flot=$1.flot; val_actual='f';}
 		|	'(' numero ')'
 		;
 %%
