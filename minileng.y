@@ -1,9 +1,15 @@
 %{
 #include <stdio.h>
+#include <math.h>
 void yyerror(char *msj);
 %}
-%union {float f; char* id;}
-%token <f> NUM ID
+%union	{
+		float flot;
+		int ent;
+		simbolo *pos_ini;
+		}
+%token <ent> ENT
+%token <flot> FLOT
 %right '='
 %left '+' '-'
 %left '*' '/'
