@@ -1,4 +1,4 @@
-#include <string.h>	//Libreria que llama a las funciones strcpy y strcmp para trabajar con strings
+//Libreria que llama a las funciones strcpy y strcmp para trabajar con strings
 
 /*Estructura que define la representacion de un simbolo en la tabla de simbolos:
 
@@ -10,6 +10,10 @@
 	-valor: Tipo de dato union que esta conformado por una variable numerica  llamada 'flot' de 
 			tipo flotante y una llamada 'ent' de tipo entero.
 */
+
+#ifndef SIMBOLO
+ #define SIMBOLO
+ #include <string.h>
 typedef union valor
 {
 		float flot;
@@ -22,6 +26,10 @@ typedef struct simbolo
 	char nombre[4];	
 	valor val;
 } simbolo;
+
+extern simbolo *simbol;
+
+extern simbolo *p_i;
 
 /*Funcion que retorna un puntero del tipo de dato estructurado simbolo. Esta se encarga
 de inicializar la tabla de simbolos, asignando al simbolo que vamos a llamar 'posicion
@@ -36,9 +44,7 @@ tomando como parametros al simbolo de posicion inicial y el nuevo simbolo a ser
 introducido en la tabla, el cual se le va a asignar un apuntador que referencie a
 la direccion en memoria del simbolo de posicion inicial y luego este ultimo apun-
 tara a la direccion de memoria del nuevo simbolo que fue insertado.*/
-void insertar(pos_ini, nuevo_sim)
-simbolo **pos_ini;
-simbolo *nuevo_sim;
+void insertar(simbolo **pos_ini, simbolo *nuevo_sim)
 {
 	nuevo_sim->sig = (*pos_ini);
 	(*pos_ini) = nuevo_sim;
@@ -59,11 +65,10 @@ inicio de la tabla.
 	-nombre[4]: Nombre que va a ser usado para comparar cada uno de los simbolos en la tabla
 				con la intencion de buscar si existe o no el simbolo inidicado mediante este
 				arreglo.*/
-simbolo* buscar(pos_init, name)
-simbolo *pos_init;
-char name[4]; 
+simbolo* buscar(simbolo *pos_init, char name[4])
 {
 	while ((pos_init != NULL) && (strcmp(name, pos_init->nombre)))
 		pos_init = pos_init->sig;
 	return (pos_init);
 };
+#endif

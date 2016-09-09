@@ -2,8 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "tablaSimb.c"
-simbolo *p_i;
+#include "tablaSimb.h"
 int temp=1;
 int lin_cod_i=1;
 char val_actual=' ';
@@ -11,20 +10,22 @@ void yyerror(char *msj);
 %}
 %union	{
 		union valor_num {
-			int ent;
+			int ent, cod_lin;
 			float flot;
 			char nombre[4];
 		};
-		
+		struct cod_int {
+			union valor_num cod_l;
+		};
+		struct cod_int cod;
 		union valor_num num;
 		int entero;
 }
 %token LEE IMPRIME PARA HASTA PASO SI ENTONCES CASO CONTRARIO RELOP
 %token <num> ENT FLOT
 %token <num> ID
-%type <num> identif
-%type <num> numero
-%type <num> exprar
+%type <num> identif numero exprar
+%type <cod> param
 %right '='
 %left '+' '-'
 %left '*' '/'
@@ -135,38 +136,23 @@ exprlog:	exprar RELOP exprar
 		;
 
 param:	numero			{ if (val_actual == 'i') {
-							printf("%d: t%d = %d\n", lin_cod_i, temp, $1);
+							sprintf($$.cod_l.nombre , "t%d", temp);
+							$$.cod_l.ent = $1.ent;
+							$$.cod_l.cod_lin = lin_cod_i;
+							printf("%d: %s = %d\n", lin_cod_i, $$.cod_l.nombre, $1.ent);
 							++lin_cod_i;
 							++temp;
 						 }
 						 else {
-							printf("%d: t%d = %f\n", lin_cod_i, temp, $1);
+							sprintf($$.cod_l.nombre, "t%d", temp);
+							$$.cod_l.flot = $1.flot;
+							$$.cod_l.cod_lin = lin_cod_i;
+							printf("%d: %s = %f\n", lin_cod_i, $$.cod_l.nombre, $1.flot);
 							++lin_cod_i;
 							++temp;
 						 }
 						}
-	|	identif '=' exprar	/*{ simbolo *sim_comp;
-							  if (val_actual == 'i') {
-								printf("%d: %s = %d\n", lin_cod_i, $1, $3);
-								++lin_cod_i;
-							  }
-							  else if (val_actual == 'f') {
-								printf("%d: %s = %f\n", lin_cod_i, $1, $3);
-								++lin_cod_i;
-							  }
-							  else {
-								sim_comp = buscar(pos_i, $3.nombre);
-								if (sim_comp == NULL && val_actual != 't') {
-									fprintf(stderr, "%d.%d-%d.%d: Variable %s no inicializada",
-									@3.first_line, @3.first_column,
-									@3.last_line, @3.last_column, $3);
-								}
-								else {
-									printf("%d: %s = %s\n", lin_cod_i, $1, $3);
-									++lin_cod_i;
-								}
-							  }
-							}*/
+	|	identif '=' exprar	{$$.cod_l.ent=$1.ent;}
 	;
 
 identif:	ID	{$$.ent=$1.ent;}

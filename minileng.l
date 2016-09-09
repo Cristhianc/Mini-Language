@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "y.tab.h"
+#include "tablaSimb.h"
 #define LT 301
 #define GT 302
 #define LE 303
@@ -38,14 +39,14 @@ identif	{letra}({letra}|{digito}){0,2}
 			for (i=0; i < yyleng; i++)
 				if (yytext[i] == ',') yytext[i]='.';
 			yylval.num.flot = atof(yytext); return FLOT;}
-{identif}	/*{yylval.pos_ini = buscar(pos_i, yytext); 
-			if (yylval.pos_ini == NULL) {
-				yylval.pos_ini = (simbolo *) malloc(sizeof(simbolo));
-				strcpy(yylval.pos_ini->nombre, yytext);
-				yylval.pos_ini->val.ent=0;
-				insertar(&pos_i, yylval.pos_ini);
+{identif}	{simbol = buscar(p_i, yytext); 
+			if (simbol == NULL) {
+				simbol = (simbolo *) malloc(sizeof(simbolo));
+				strcpy(simbol->nombre, yytext);
+				simbol->val.ent=0;
+				insertar(&p_i, simbol);
 			}
-			return ID;}*/
+			return ID;}
 {espacs}	{;}
 %%
 int yywrap() {

@@ -410,13 +410,14 @@ char *yytext;
 #include <stdlib.h>
 #include <string.h>
 #include "y.tab.h"
+#include "tablaSimb.h"
 #define LT 301
 #define GT 302
 #define LE 303
 #define GE 304
 #define EQ 305
 #define NE 306
-#line 420 "lex.yy.c"
+#line 421 "lex.yy.c"
 
 /* Macros after this point can all be overridden by user definitions in
  * section 1.
@@ -567,9 +568,9 @@ YY_DECL
 	register char *yy_cp, *yy_bp;
 	register int yy_act;
 
-#line 19 "minileng.l"
+#line 20 "minileng.l"
 
-#line 573 "lex.yy.c"
+#line 574 "lex.yy.c"
 
 	if ( yy_init )
 		{
@@ -654,92 +655,92 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 20 "minileng.l"
+#line 21 "minileng.l"
 {return LEE;}
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 21 "minileng.l"
+#line 22 "minileng.l"
 {return IMPRIME;}
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 22 "minileng.l"
+#line 23 "minileng.l"
 {return PARA;}
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 23 "minileng.l"
+#line 24 "minileng.l"
 {return HASTA;}
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 24 "minileng.l"
+#line 25 "minileng.l"
 {return PASO;}
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 25 "minileng.l"
+#line 26 "minileng.l"
 {return SI;}
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 26 "minileng.l"
+#line 27 "minileng.l"
 {return ENTONCES;}
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 27 "minileng.l"
+#line 28 "minileng.l"
 {return CASO;}
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 28 "minileng.l"
+#line 29 "minileng.l"
 {return CONTRARIO;}
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 29 "minileng.l"
+#line 30 "minileng.l"
 {yylval.entero = LT; return RELOP;}
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 30 "minileng.l"
+#line 31 "minileng.l"
 {yylval.entero = GT; return RELOP;}
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 31 "minileng.l"
+#line 32 "minileng.l"
 {yylval.entero = LE; return RELOP;}
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 32 "minileng.l"
+#line 33 "minileng.l"
 {yylval.entero = GE; return RELOP;}
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 33 "minileng.l"
+#line 34 "minileng.l"
 {yylval.entero = NE; return RELOP;}
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 34 "minileng.l"
+#line 35 "minileng.l"
 {yylval.entero = EQ; return RELOP;}
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 35 "minileng.l"
+#line 36 "minileng.l"
 {yylval.num.ent = atoi(yytext); return ENT;}
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 36 "minileng.l"
+#line 37 "minileng.l"
 {return yytext[0];}
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 37 "minileng.l"
+#line 38 "minileng.l"
 { int i; 
 			for (i=0; i < yyleng; i++)
 				if (yytext[i] == ',') yytext[i]='.';
@@ -747,27 +748,27 @@ YY_RULE_SETUP
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 41 "minileng.l"
-/*{yylval.pos_ini = buscar(pos_i, yytext); 
-			if (yylval.pos_ini == NULL) {
-				yylval.pos_ini = (simbolo *) malloc(sizeof(simbolo));
-				strcpy(yylval.pos_ini->nombre, yytext);
-				yylval.pos_ini->val.ent=0;
-				insertar(&pos_i, yylval.pos_ini);
+#line 42 "minileng.l"
+{simbol = buscar(p_i, yytext); 
+			if (simbol == NULL) {
+				simbol = (simbolo *) malloc(sizeof(simbolo));
+				strcpy(simbol->nombre, yytext);
+				simbol->val.ent=0;
+				insertar(&p_i, simbol);
 			}
-			return ID;}*/
+			return ID;}
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 49 "minileng.l"
+#line 50 "minileng.l"
 {;}
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 50 "minileng.l"
+#line 51 "minileng.l"
 ECHO;
 	YY_BREAK
-#line 771 "lex.yy.c"
+#line 772 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1653,7 +1654,7 @@ int main()
 	return 0;
 	}
 #endif
-#line 50 "minileng.l"
+#line 51 "minileng.l"
 
 int yywrap() {
 	return 1;
