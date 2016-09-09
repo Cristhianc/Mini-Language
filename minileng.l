@@ -1,7 +1,6 @@
 %{
 #include <stdlib.h>
 #include <string.h>
-#include "tablaSimb.h"
 #include "y.tab.h"
 #define LT 301
 #define GT 302
@@ -14,7 +13,8 @@ letra	[a-zA-Z]
 digito	[0-9]
 espacs	[ \t\n]+
 oparsym	[\*\/\-\+\(\)\;]
-numero	([\+\-])?{digito}+(\,{digito}+([eE]{digito}+)?)?
+num_int	([\+\-])?({digito}){1,4}
+num_float ([\+\-])?{digito}+\,{digito}+([eE]{digito}+)?
 identif	{letra}({letra}|{digito}){0,2}
 %%
 {oparsym}	{return yytext[0];}
@@ -33,15 +33,16 @@ identif	{letra}({letra}|{digito}){0,2}
 '>='		{yylval.entero = GE; return RELOP;}
 '<>'		{yylval.entero = NE; return RELOP;}
 '=='		{yylval.entero = EQ; return RELOP;}
-{numero}	{yylval.num.ent = atoi(yytext); return ENT;}
-{identif}	{yylval.pos_ini = buscar(pos_i, yytext); 
+{num_int}	{yylval.num.ent = atoi(yytext); return ENT;}
+{num_float}	{yylval.num.flot = atof(yytext); return FLOT;}
+{identif}	/*{yylval.pos_ini = buscar(pos_i, yytext); 
 			if (yylval.pos_ini == NULL) {
 				yylval.pos_ini = (simbolo *) malloc(sizeof(simbolo));
 				strcpy(yylval.pos_ini->nombre, yytext);
 				yylval.pos_ini->val.ent=0;
 				insertar(&pos_i, yylval.pos_ini);
 			}
-			return ID;}
+			return ID;}*/
 {espacs}	{;}
 %%
 int yywrap() {

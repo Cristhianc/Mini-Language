@@ -1,0 +1,8 @@
+1: param 1
+2: call imprime,1
+3: param 10
+4: call imprime,1
+5: param 15
+6: call imprime,1
+7: param 10.000000
+8: call imprime,1

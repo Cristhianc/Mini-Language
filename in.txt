@@ -1,1 +1,5 @@
-lee x;
+imprime 1;
+imprime 10;
+imprime 15;
+imprime 10,50;
+imprime 0,100070;

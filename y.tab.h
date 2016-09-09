@@ -79,22 +79,21 @@ typedef union YYSTYPE
 {
 
 /* Line 1676 of yacc.c  */
-#line 9 "minileng.y"
+#line 12 "minileng.y"
 
-		union const_num{
-		char nombre[4];
-		int ent;
-		float flot;	
+		union valor_num {
+			int ent;
+			float flot;
+			char nombre[4];
 		};
-		union const_num num;
+		
+		union valor_num num;
 		int entero;
-		simbolo *pos_ini;
-		char nom[4];
 
 
 
 /* Line 1676 of yacc.c  */
-#line 98 "y.tab.h"
+#line 97 "y.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */

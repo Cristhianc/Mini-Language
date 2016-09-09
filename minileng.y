@@ -1,26 +1,28 @@
 %{
 #include <stdio.h>
-#include "tablaSimb.h"
+#include <stdlib.h>
+#include <string.h>
+#include "tablaSimb.c"
+simbolo *p_i;
 int temp=1;
 int lin_cod_i=1;
 char val_actual=' ';
 void yyerror(char *msj);
 %}
 %union	{
-		union const_num{
-		char nombre[4];
-		int ent;
-		float flot;	
+		union valor_num {
+			int ent;
+			float flot;
+			char nombre[4];
 		};
-		union const_num num;
+		
+		union valor_num num;
 		int entero;
-		simbolo *pos_ini;
-		char nom[4];
 }
 %token LEE IMPRIME PARA HASTA PASO SI ENTONCES CASO CONTRARIO RELOP
 %token <num> ENT FLOT
-%token <pos_ini> ID
-%type <nom> identif
+%token <num> ID
+%type <num> identif
 %type <num> numero
 %type <num> exprar
 %right '='
@@ -41,21 +43,21 @@ instr:	LEE identif ';'	{printf("%d: param %s\n", lin_cod_i, $2);
 						printf("%d: call lee,1\n"); 
 						++lin_cod_i;}
 	|	IMPRIME exprar ';'	{if ($2.ent != 0 && val_actual == 'i') {
-									printf("%d: param %d\n", $2);
+									printf("%d: param %d\n", lin_cod_i, $2.ent);
 									++lin_cod_i;
-									printf("%d: call lee,1\n");
+									printf("%d: call imprime,1\n", lin_cod_i);
 									++lin_cod_i;
 								}
 								else if ($2.flot != 0 && val_actual == 'f') {
-									printf("%d: param %f\n", $2);
+									printf("%d: param %f\n", lin_cod_i, $2.flot);
 									++lin_cod_i;
-									printf("%d: call lee,1\n");
+									printf("%d: call imprime,1\n", lin_cod_i);
 									++lin_cod_i;
 								}
 								else if ($2.nombre != NULL && val_actual == 's'){
 									printf("%d: param %s\n", $2);
 									++lin_cod_i;
-									printf("%d: call lee,1\n");
+									printf("%d: call imprime,1\n");
 									++lin_cod_i;
 								}
 								else {
@@ -73,7 +75,7 @@ exprasig:	identif '=' exprar
 		|	identif '=' exprasig
 		;
 
-exprar:	identif				{strcpy($$.nombre, $1);}
+exprar:	identif				{strcpy($$.nombre, $1.nombre);}
 	|	numero				{if (val_actual == 'i') $$.ent=$1.ent;
 							 else $$.flot=$1.flot;}
 	|	/*{sprintf($<nom>$, "t%d", temp); ++temp}*/ exprar '+' exprar {printf("%d: %s = %");}
@@ -110,7 +112,7 @@ param:	numero			{ if (val_actual == 'i') {
 							++temp;
 						 }
 						}
-	|	identif '=' exprar	{ simbolo *sim_comp;
+	|	identif '=' exprar	/*{ simbolo *sim_comp;
 							  if (val_actual == 'i') {
 								printf("%d: %s = %d\n", lin_cod_i, $1, $3);
 								++lin_cod_i;
@@ -131,10 +133,10 @@ param:	numero			{ if (val_actual == 'i') {
 									++lin_cod_i;
 								}
 							  }
-							}
+							}*/
 	;
 
-identif:	ID	{strcpy($$, $1->nombre); val_actual='s';}
+identif:	ID	{$$.ent=$1.ent;}
 		;
 
 numero:		ENT		{$$.ent=$1.ent; val_actual='i';}
@@ -146,7 +148,7 @@ void yyerror(char *msg) {
 }
 
 int main() {
-	pos_i = inicTabla();
+	/*pos_i = inicTabla();*/
 	yyparse();
 	return 0;
 }
