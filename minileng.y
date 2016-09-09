@@ -1,25 +1,25 @@
 %{
 #include <stdio.h>
-#include <math.h>
-#include "tablaSimb.h"
+#include "tablaSimb.c"
 
 simbolo *pos_i;
 int temp=1;
 int lin_cod_i=1;
 char val_actual=' ';
-union numero {
-	int ent;
-	float flot;
-	char *nombre;
-}
 void yyerror(char *msj);
 %}
 %union	{
-		union numero num;
-		char *nom;
+		union const_num{
+		char nombre[4];
+		int ent;
+		float flot;	
+		};
+		union const_num num;		
+		int entero;
 		simbolo *pos_ini;
-		}
-%token RELOP
+		char nom[4];
+}
+%token LEE IMPRIME PARA HASTA PASO SI ENTONCES CASO CONTRARIO RELOP
 %token <num> ENT FLOT
 %token <pos_ini> ID
 %type <nom> identif
@@ -30,35 +30,38 @@ void yyerror(char *msj);
 %left '*' '/'
 %right UMENOS
 %%
-instrs: /* Vacio */
-	|	instr
+instrs: instr
 	|	instrs instr
-	|	error	{fprintf("%d.%d-%d.%d: Instruccion inválida",
+	|	error	{fprintf(stderr, "%d.%d-%d.%d: Instruccion inválida",
 				@1.first_line, @1.first_column, @1.last_line,
 				@1.last_column); 
 				yyerrok;}
 	;
 
-instr:	LEE identif ';'	{printf("%d: param %s\n", lin_cod_i, $2->nombre);
+instr:	LEE identif ';'	{printf("%d: param %s\n", lin_cod_i, $2);
 						++lin_cod_i;
 						printf("%d: call lee,1\n"); 
 						++lin_cod_i;}
-	|	IMPRIME exprar ';'	{	if ($2!=NULL) {
-									if (val_actual=='i') {
-										printf("%d: param %d\n", $2);
-										++lin_cod_i;
-									}
-									else if (val_actual=='f') {
-										printf("%d: param %f\n", $2);
-										++lin_cod_i;
-									else {
-										printf("%d: param %s\n", $2);
-										++lin_cod_i;
-									}
+	|	IMPRIME exprar ';'	{if ($2.ent != 0 && val_actual == 'i') {
+									printf("%d: param %d\n", $2);
+									++lin_cod_i;
 									printf("%d: call lee,1\n");
 									++lin_cod_i;
-								} else {
-									fprintf("%d.%d-%d.%d: Expresion aritmetica no inicializada",
+								}
+								else if ($2.flot != 0 && val_actual == 'f') {
+									printf("%d: param %f\n", $2);
+									++lin_cod_i;
+									printf("%d: call lee,1\n");
+									++lin_cod_i;
+								}
+								else if ($2.nombre != NULL && val_actual == 's'){
+									printf("%d: param %s\n", $2);
+									++lin_cod_i;
+									printf("%d: call lee,1\n");
+									++lin_cod_i;
+								}
+								else {
+									fprintf(stderr, "%d.%d-%d.%d: Expresion aritmetica no inicializada\n\n",
 									@2.first_line, @2.first_column, @2.last_line,
 									@2.last_column);
 								}
@@ -66,20 +69,24 @@ instr:	LEE identif ';'	{printf("%d: param %s\n", lin_cod_i, $2->nombre);
 	|	exprasig ';'
 	|	PARA param HASTA param PASO param '(' instr ')' ';'
 	|	SI exprlog ENTONCES instr CASO CONTRARIO instr
-	|	'(' instr ')'
 	;
 
 exprasig:	identif '=' exprar
 		|	identif '=' exprasig
 		;
 
-exprar:	identif				{$$=$1;}
-	|	numero				{$$=$1;}
-	|	{printf("%d: t%d = ", lin_cod_i, temp); strcpy()} exprar '+' exprar
+exprar:	identif				{strcpy($$.nombre, $1);}
+	|	numero				{if (val_actual == 'i') $$.ent=$1.ent;
+							 else $$.flot=$1.flot;}
+	|	/*{sprintf($<nom>$, "t%d", temp); ++temp}*/ exprar '+' exprar {printf("%d: %s = %");}
 	|	exprar '-' exprar
 	|	exprar '*' exprar
-	|	exprar '/' exprar	{	if ($3)
-									printf("%");
+	|	exprar '/' exprar	{	if ($3.ent != 0 && val_actual == 'i') {
+								
+								}
+								else if ($3.flot != 0 && val_actual == 'f') {
+								
+								}
 								else {
 									fprintf(stderr, "%d.%d-%d.%d: division por cero",
 									@3.first_line, @3.first_column,
@@ -89,14 +96,12 @@ exprar:	identif				{$$=$1;}
 	|	'-' numero %prec UMENOS	{printf("%d: t%d = -%d\n", lin_cod_i, temp, $2); 
 								++lin_cod_i;
 								++temp;}
-	|	'(' exprar ')'
 	;
 	
 exprlog:	exprar RELOP exprar
-		|	'(' exprlog ')'
 		;
 
-param:	numero			{ if (val_actual=='i') {
+param:	numero			{ if (val_actual == 'i') {
 							printf("%d: t%d = %d\n", lin_cod_i, temp, $1);
 							++lin_cod_i;
 							++temp;
@@ -107,18 +112,18 @@ param:	numero			{ if (val_actual=='i') {
 							++temp;
 						 }
 						}
-	|	identif '=' exprar	{ simbolo sim_comp;
-							  if (val_actual=='i') {
+	|	identif '=' exprar	{ simbolo *sim_comp;
+							  if (val_actual == 'i') {
 								printf("%d: %s = %d\n", lin_cod_i, $1, $3);
 								++lin_cod_i;
 							  }
-							  else if (val_actual=='f') {
+							  else if (val_actual == 'f') {
 								printf("%d: %s = %f\n", lin_cod_i, $1, $3);
 								++lin_cod_i;
 							  }
 							  else {
-								sim_comp = buscar(pos_ini, $3);
-								if (sim_comp==NULL && val_actual!='t') {
+								sim_comp = buscar(pos_i, $3.nombre);
+								if (sim_comp == NULL && val_actual != 't') {
 									fprintf(stderr, "%d.%d-%d.%d: Variable %s no inicializada",
 									@3.first_line, @3.first_column,
 									@3.last_line, @3.last_column, $3);
@@ -129,16 +134,13 @@ param:	numero			{ if (val_actual=='i') {
 								}
 							  }
 							}
-	|	'(' param ')'
 	;
 
 identif:	ID	{strcpy($$, $1->nombre); val_actual='s';}
-		|	'(' identif ')'
 		;
 
 numero:		ENT		{$$.ent=$1.ent; val_actual='i';}
 		|	FLOT	{$$.flot=$1.flot; val_actual='f';}
-		|	'(' numero ')'
 		;
 %%
 void yyerror(char *msg) {
@@ -146,6 +148,7 @@ void yyerror(char *msg) {
 }
 
 int main() {
+	pos_i = inicTabla();
 	yyparse();
 	return 0;
 }

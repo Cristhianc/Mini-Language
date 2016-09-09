@@ -1,12 +1,21 @@
 %{
+#include <stdlib.h>
+#include <string.h>
+#include "tablaSimb.c"
 #include "y.tab.h"
+#define LT 301
+#define GT 302
+#define LE 303
+#define GE 304
+#define EQ 305
+#define NE 306
 %}
 letra	[a-zA-Z]
 digito	[0-9]
 espacs	[ \t\n]+
 oparsym	[\*\/\-\+\(\)\;]
 numero	([\+\-])?{digito}+(\,{digito}+([eE]{digito}+)?)?
-identif	{letra}[{letra}{digito}]{0,2}
+identif	{letra}({letra}|{digito}){0,2}
 %%
 {oparsym}	{return yytext[0];}
 "lee"		{return LEE;}
@@ -18,14 +27,21 @@ identif	{letra}[{letra}{digito}]{0,2}
 "entonces"	{return ENTONCES;}
 "caso"		{return CASO;}
 "contrario"	{return CONTRARIO;}
-'<'			{yylval.int = LT; return RELOP;}
-'>'			{yylval.int = GT; return RELOP;}
-'<='		{yylval.int = LE; return RELOP;}
-'>='		{yylval.int = GE; return RELOP;}
-'<>'		{yylval.int = NE; return RELOP;}
-'=='		{yylval.int = EQ; return RELOP;}
-{numero}	{return NUM;}
-{identif}	{return ID;}
+'<'			{yylval.entero = LT; return RELOP;}
+'>'			{yylval.entero = GT; return RELOP;}
+'<='		{yylval.entero = LE; return RELOP;}
+'>='		{yylval.entero = GE; return RELOP;}
+'<>'		{yylval.entero = NE; return RELOP;}
+'=='		{yylval.entero = EQ; return RELOP;}
+{numero}	{yylval.num.ent = atoi(yytext); return ENT;}
+{identif}	{yylval.pos_ini = buscar(pos_i, yytext); 
+			if (yylval.pos_ini == NULL) {
+				yylval.pos_ini = (simbolo *) malloc(sizeof(simbolo));
+				strcpy(yylval.pos_ini->nombre, yytext);
+				yylval.pos_ini->val.ent=0;
+				insertar(&pos_i, yylval.pos_ini);
+			}
+			return ID;}
 {espacs}	{;}
 %%
 int yywrap() {
