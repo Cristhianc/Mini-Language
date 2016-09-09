@@ -1,1 +1,1 @@
-para 1 hasta 10 paso 2 ( imprime 10;);
+i = 3;

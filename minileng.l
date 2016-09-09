@@ -9,6 +9,9 @@
 #define GE 304
 #define EQ 305
 #define NE 306
+
+simbolo *simbol;
+simbolo *p_i;
 %}
 letra	[a-zA-Z]
 digito	[0-9]

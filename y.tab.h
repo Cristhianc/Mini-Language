@@ -39,6 +39,7 @@
    /* Put the tokens into the symbol table, so that GDB and other debuggers
       know about them.  */
    enum yytokentype {
+     END = 0,
      LEE = 258,
      IMPRIME = 259,
      PARA = 260,
@@ -56,6 +57,7 @@
    };
 #endif
 /* Tokens.  */
+#define END 0
 #define LEE 258
 #define IMPRIME 259
 #define PARA 260
@@ -96,7 +98,7 @@ typedef union YYSTYPE
 
 
 /* Line 1676 of yacc.c  */
-#line 100 "y.tab.h"
+#line 102 "y.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
