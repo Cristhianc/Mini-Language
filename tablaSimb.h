@@ -58,3 +58,5 @@ simbolo* buscar(simbolo *pos_ini, char nombre[4]) {
 		pos_ini = pos_ini->sig;
 	return (pos_ini);
 }
+
+extern simbolo *pos_i;

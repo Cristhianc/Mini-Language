@@ -79,14 +79,14 @@ typedef union YYSTYPE
 {
 
 /* Line 1676 of yacc.c  */
-#line 11 "minileng.y"
+#line 9 "minileng.y"
 
 		union const_num{
 		char nombre[4];
 		int ent;
 		float flot;	
 		};
-		union const_num num;		
+		union const_num num;
 		int entero;
 		simbolo *pos_ini;
 		char nom[4];

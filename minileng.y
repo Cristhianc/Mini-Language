@@ -1,8 +1,6 @@
 %{
 #include <stdio.h>
-#include "tablaSimb.c"
-
-simbolo *pos_i;
+#include "tablaSimb.h"
 int temp=1;
 int lin_cod_i=1;
 char val_actual=' ';
@@ -14,7 +12,7 @@ void yyerror(char *msj);
 		int ent;
 		float flot;	
 		};
-		union const_num num;		
+		union const_num num;
 		int entero;
 		simbolo *pos_ini;
 		char nom[4];

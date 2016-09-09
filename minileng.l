@@ -1,7 +1,7 @@
 %{
 #include <stdlib.h>
 #include <string.h>
-#include "tablaSimb.c"
+#include "tablaSimb.h"
 #include "y.tab.h"
 #define LT 301
 #define GT 302

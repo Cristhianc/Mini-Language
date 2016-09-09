@@ -21,6 +21,8 @@ typedef struct simbolo {
 	valor val;
 } simbolo;
 
+simbolo *pos_i;
+
 /*Funcion que retorna un puntero del tipo de dato estructurado simbolo. Esta se encarga
 de inicializar la tabla de simbolos, asignando al simbolo que vamos a llamar 'posicion
 inicial' el valor NULL.*/

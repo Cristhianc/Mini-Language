@@ -71,9 +71,7 @@
 #line 1 "minileng.y"
 
 #include <stdio.h>
-#include "tablaSimb.c"
-
-simbolo *pos_i;
+#include "tablaSimb.h"
 int temp=1;
 int lin_cod_i=1;
 char val_actual=' ';
@@ -81,7 +79,7 @@ void yyerror(char *msj);
 
 
 /* Line 189 of yacc.c  */
-#line 85 "y.tab.c"
+#line 83 "y.tab.c"
 
 /* Enabling traces.  */
 #ifndef YYDEBUG
@@ -148,14 +146,14 @@ typedef union YYSTYPE
 {
 
 /* Line 214 of yacc.c  */
-#line 11 "minileng.y"
+#line 9 "minileng.y"
 
 		union const_num{
 		char nombre[4];
 		int ent;
 		float flot;	
 		};
-		union const_num num;		
+		union const_num num;
 		int entero;
 		simbolo *pos_ini;
 		char nom[4];
@@ -163,7 +161,7 @@ typedef union YYSTYPE
 
 
 /* Line 214 of yacc.c  */
-#line 167 "y.tab.c"
+#line 165 "y.tab.c"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
@@ -188,7 +186,7 @@ typedef struct YYLTYPE
 
 
 /* Line 264 of yacc.c  */
-#line 192 "y.tab.c"
+#line 190 "y.tab.c"
 
 #ifdef short
 # undef short
@@ -483,9 +481,9 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    33,    33,    34,    35,    41,    45,    69,    70,    71,
-      74,    75,    78,    79,    81,    82,    83,    84,    96,   101,
-     104,   115,   139,   142,   143
+       0,    31,    31,    32,    33,    39,    43,    67,    68,    69,
+      72,    73,    76,    77,    79,    80,    81,    82,    94,    99,
+     102,   113,   137,   140,   141
 };
 #endif
 
@@ -1456,7 +1454,7 @@ yyreduce:
         case 4:
 
 /* Line 1455 of yacc.c  */
-#line 35 "minileng.y"
+#line 33 "minileng.y"
     {fprintf(stderr, "%d.%d-%d.%d: Instruccion inválida",
 				(yylsp[(1) - (1)]).first_line, (yylsp[(1) - (1)]).first_column, (yylsp[(1) - (1)]).last_line,
 				(yylsp[(1) - (1)]).last_column); 
@@ -1466,7 +1464,7 @@ yyreduce:
   case 5:
 
 /* Line 1455 of yacc.c  */
-#line 41 "minileng.y"
+#line 39 "minileng.y"
     {printf("%d: param %s\n", lin_cod_i, (yyvsp[(2) - (3)].nom));
 						++lin_cod_i;
 						printf("%d: call lee,1\n"); 
@@ -1476,7 +1474,7 @@ yyreduce:
   case 6:
 
 /* Line 1455 of yacc.c  */
-#line 45 "minileng.y"
+#line 43 "minileng.y"
     {if ((yyvsp[(2) - (3)].num).ent != 0 && val_actual == 'i') {
 									printf("%d: param %d\n", (yyvsp[(2) - (3)].num));
 									++lin_cod_i;
@@ -1506,14 +1504,14 @@ yyreduce:
   case 12:
 
 /* Line 1455 of yacc.c  */
-#line 78 "minileng.y"
+#line 76 "minileng.y"
     {strcpy((yyval.num).nombre, (yyvsp[(1) - (1)].nom));}
     break;
 
   case 13:
 
 /* Line 1455 of yacc.c  */
-#line 79 "minileng.y"
+#line 77 "minileng.y"
     {if (val_actual == 'i') (yyval.num).ent=(yyvsp[(1) - (1)].num).ent;
 							 else (yyval.num).flot=(yyvsp[(1) - (1)].num).flot;}
     break;
@@ -1521,14 +1519,14 @@ yyreduce:
   case 14:
 
 /* Line 1455 of yacc.c  */
-#line 81 "minileng.y"
+#line 79 "minileng.y"
     {printf("%d: %s = %");}
     break;
 
   case 17:
 
 /* Line 1455 of yacc.c  */
-#line 84 "minileng.y"
+#line 82 "minileng.y"
     {	if ((yyvsp[(3) - (3)].num).ent != 0 && val_actual == 'i') {
 								
 								}
@@ -1546,7 +1544,7 @@ yyreduce:
   case 18:
 
 /* Line 1455 of yacc.c  */
-#line 96 "minileng.y"
+#line 94 "minileng.y"
     {printf("%d: t%d = -%d\n", lin_cod_i, temp, (yyvsp[(2) - (2)].num)); 
 								++lin_cod_i;
 								++temp;}
@@ -1555,7 +1553,7 @@ yyreduce:
   case 20:
 
 /* Line 1455 of yacc.c  */
-#line 104 "minileng.y"
+#line 102 "minileng.y"
     { if (val_actual == 'i') {
 							printf("%d: t%d = %d\n", lin_cod_i, temp, (yyvsp[(1) - (1)].num));
 							++lin_cod_i;
@@ -1572,7 +1570,7 @@ yyreduce:
   case 21:
 
 /* Line 1455 of yacc.c  */
-#line 115 "minileng.y"
+#line 113 "minileng.y"
     { simbolo *sim_comp;
 							  if (val_actual == 'i') {
 								printf("%d: %s = %d\n", lin_cod_i, (yyvsp[(1) - (3)].nom), (yyvsp[(3) - (3)].num));
@@ -1600,28 +1598,28 @@ yyreduce:
   case 22:
 
 /* Line 1455 of yacc.c  */
-#line 139 "minileng.y"
+#line 137 "minileng.y"
     {strcpy((yyval.nom), (yyvsp[(1) - (1)].pos_ini)->nombre); val_actual='s';}
     break;
 
   case 23:
 
 /* Line 1455 of yacc.c  */
-#line 142 "minileng.y"
+#line 140 "minileng.y"
     {(yyval.num).ent=(yyvsp[(1) - (1)].num).ent; val_actual='i';}
     break;
 
   case 24:
 
 /* Line 1455 of yacc.c  */
-#line 143 "minileng.y"
+#line 141 "minileng.y"
     {(yyval.num).flot=(yyvsp[(1) - (1)].num).flot; val_actual='f';}
     break;
 
 
 
 /* Line 1455 of yacc.c  */
-#line 1625 "y.tab.c"
+#line 1623 "y.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -1840,7 +1838,7 @@ yyreturn:
 
 
 /* Line 1675 of yacc.c  */
-#line 145 "minileng.y"
+#line 143 "minileng.y"
 
 void yyerror(char *msg) {
 	fprintf(stderr, "%s\n", msg);
