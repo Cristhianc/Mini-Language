@@ -14,7 +14,7 @@ typedef union valor
 {
 		float flot;
 		int ent;
-		char temp[5];
+		char temp_id[5];
 }valor;
 
 typedef struct simbolo 
@@ -54,3 +54,6 @@ inicio de la tabla.
 				con la intencion de buscar si existe o no el simbolo inidicado mediante este
 				arreglo.*/
 simbolo* buscar(simbolo *pos_init, char name[4]);
+void modificarInt(simbolo *pos_ini, int val);
+void modificarFloat(simbolo *pos_ini, float val);
+void modificarChar(simbolo *pos_ini, char val[4]);

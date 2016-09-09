@@ -46,11 +46,11 @@ identif	{letra}({letra}|{digito}){0,2}
 			if (simbol == NULL) {
 				simbol = (simbolo *) malloc(sizeof(simbolo));
 				strcpy(simbol->nombre, yytext);
-				simbol->val.ent=0;
 				insertar(&p_i, simbol);
 			}
 			return ID;}
 {espacs}	{;}
+"\0"		{return END;}
 %%
 int yywrap() {
 	return 1;
