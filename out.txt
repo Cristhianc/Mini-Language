@@ -4,5 +4,17 @@
 4: call imprime,1
 5: param 15
 6: call imprime,1
-7: param 10.000000
+7: param 10.500000
 8: call imprime,1
+9: param 0.100070
+10: call imprime,1
+11: t1 = minus 11
+12: param t1
+12: call imprime,1
+14: t2 = minus 1.670000
+15: param t2
+15: call imprime,1
+17: t3 = minus 1
+18: t4 = minus t3
+19: param t4
+19: call imprime,1

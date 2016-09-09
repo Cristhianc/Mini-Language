@@ -13,11 +13,10 @@ letra	[a-zA-Z]
 digito	[0-9]
 espacs	[ \t\n]+
 oparsym	[\*\/\-\+\(\)\;]
-num_int	([\+\-])?({digito}){1,4}
-num_float ([\+\-])?{digito}+\,{digito}+([eE]{digito}+)?
+num_int	({digito}){1,4}
+num_float {digito}+\,{digito}+([eE]{digito}+)?
 identif	{letra}({letra}|{digito}){0,2}
 %%
-{oparsym}	{return yytext[0];}
 "lee"		{return LEE;}
 "imprime"	{return IMPRIME;}
 "para"		{return PARA;}
@@ -34,7 +33,11 @@ identif	{letra}({letra}|{digito}){0,2}
 '<>'		{yylval.entero = NE; return RELOP;}
 '=='		{yylval.entero = EQ; return RELOP;}
 {num_int}	{yylval.num.ent = atoi(yytext); return ENT;}
-{num_float}	{yylval.num.flot = atof(yytext); return FLOT;}
+{oparsym}	{return yytext[0];}
+{num_float}	{ int i; 
+			for (i=0; i < yyleng; i++)
+				if (yytext[i] == ',') yytext[i]='.';
+			yylval.num.flot = atof(yytext); return FLOT;}
 {identif}	/*{yylval.pos_ini = buscar(pos_i, yytext); 
 			if (yylval.pos_ini == NULL) {
 				yylval.pos_ini = (simbolo *) malloc(sizeof(simbolo));

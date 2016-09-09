@@ -3,3 +3,6 @@ imprime 10;
 imprime 15;
 imprime 10,50;
 imprime 0,100070;
+imprime -11;
+imprime -1,67;
+imprime -(-1);

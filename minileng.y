@@ -55,7 +55,7 @@ instr:	LEE identif ';'	{printf("%d: param %s\n", lin_cod_i, $2);
 									++lin_cod_i;
 								}
 								else if ($2.nombre != NULL && val_actual == 's'){
-									printf("%d: param %s\n", $2);
+									printf("%d: param %s\n", lin_cod_i, $2.nombre);
 									++lin_cod_i;
 									printf("%d: call imprime,1\n");
 									++lin_cod_i;
@@ -93,9 +93,42 @@ exprar:	identif				{strcpy($$.nombre, $1.nombre);}
 									@3.last_line, @3.last_column);
 								}
 							}
-	|	'-' numero %prec UMENOS	{printf("%d: t%d = -%d\n", lin_cod_i, temp, $2); 
-								++lin_cod_i;
-								++temp;}
+	|	'-' '(' exprar ')' %prec UMENOS	{ if (val_actual == 'i') {
+									sprintf($$.nombre, "t%d", temp);
+									val_actual = 's';
+									printf("%d: %s = minus %d\n", lin_cod_i, $$.nombre, $3.ent); 
+									++lin_cod_i;
+									++temp;
+								 }
+								 else if (val_actual == 'f') {
+									sprintf($$.nombre, "t%d", temp);
+									val_actual = 's';
+									printf("%d: %s = minus %f\n", lin_cod_i, $$.nombre, $3.flot); 
+									++lin_cod_i;
+									++temp;
+								 }
+								 else {
+									sprintf($$.nombre, "t%d", temp);
+									printf("%d: %s = minus %s\n", lin_cod_i, $$.nombre, $3.nombre); 
+									++lin_cod_i;
+									++temp;
+								 }
+								}
+	|	'-' numero %prec UMENOS	{ if (val_actual == 'i') {
+									sprintf($$.nombre, "t%d", temp);
+									val_actual = 's';
+									printf("%d: %s = minus %d\n", lin_cod_i, $$.nombre, $2.ent); 
+									++lin_cod_i;
+									++temp;
+								 }
+								 else {
+									sprintf($$.nombre, "t%d", temp);
+									val_actual = 's';
+									printf("%d: %s = minus %f\n", lin_cod_i, $$.nombre, $2.flot); 
+									++lin_cod_i;
+									++temp;
+								 }
+								}
 	;
 	
 exprlog:	exprar RELOP exprar
