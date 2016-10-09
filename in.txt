@@ -1,1 +1,4 @@
-i = 3;
+empezar;
+abrir calcular.l;
+crear proba.txt "Hola a todo el mundo"
+directorio;
